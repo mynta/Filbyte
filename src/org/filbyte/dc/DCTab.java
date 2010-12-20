@@ -17,10 +17,10 @@ public class DCTab extends JPanel implements Stopable{
 	public final String ip;
 	public final int port;
 	
-	public DCTab (final JFrame window, String ip, int port) {
+	public DCTab (final JFrame window) {
 		SU.assertEdt ();
-		this.ip = ip;
-		this.port = port;
+		this.ip = GlobalProperties.getString ("ourIP");
+		this.port = maybeOpenAppropriatePort ();
 		setLayout(new BorderLayout ());
 		JToolBar buttonPanel = new JToolBar ();
 		buttonPanel.setFloatable (false);
@@ -52,6 +52,17 @@ public class DCTab extends JPanel implements Stopable{
 		
 		context.tabs = new TabManager ();
 		add (context.tabs.jtp, BorderLayout.CENTER);
+	}
+	private int maybeOpenAppropriatePort () {
+		if (!GlobalProperties.getBool ("upnp"))
+			return GlobalProperties.getInt ("dc.port");
+		
+		if (GlobalProperties.getBool ("dc.auto-port"))
+			return PortHandler.openPort ();
+		
+		int port = GlobalProperties.getInt ("dc.port");
+		PortHandler.openPort (port);
+		return port;
 	}
 	public void start () {
 		SU.assertEdt ();

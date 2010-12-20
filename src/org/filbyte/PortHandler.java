@@ -13,7 +13,6 @@ public class PortHandler {
 	private static HashSet<Integer> openedPorts = new HashSet<Integer> ();;
 
 	public static synchronized void init (int timeOut, int startport) throws IOException {
-		System.out.println ("lol");
 		InternetGatewayDevice[] IGDs = InternetGatewayDevice
 				.getDevices (timeOut);
 		if (IGDs != null)
@@ -43,8 +42,15 @@ public class PortHandler {
 				boolean mapped = IGD.addPortMapping (
 						"Some mapping description", null, port, port,
 						localHostIP, 24 * 3600, "TCP");
-				if (mapped)
-					openedPorts.add (port);
+				if (mapped) {
+					mapped = IGD.addPortMapping (
+							"Some mapping description", null, port, port,
+							localHostIP, 24 * 3600, "UDP");
+					if (mapped)
+						openedPorts.add (port);
+					else
+						IGD.deletePortMapping( null, port, "TCP" );
+				}
 				return mapped;
 			} catch (Exception e) {
 				return false;
@@ -88,6 +94,7 @@ public class PortHandler {
 			int port = it.next ();
 			try {
 				IGD.deletePortMapping( null, port, "TCP" );
+				IGD.deletePortMapping( null, port, "UDP" );
 			} catch (Exception e) {
 				// Whatever
 			}

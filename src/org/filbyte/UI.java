@@ -15,8 +15,7 @@ import java.util.List;
 public class UI extends javax.swing.JFrame {
 	private static final long serialVersionUID = -1230351475515089542L;
 	TabManager tm;
-	JTextField ipField;
-	JTextField portField;
+	JTextField queryField;
 	List<String> tabs = new ArrayList <String> ();
 	
     public UI() {
@@ -37,14 +36,14 @@ public class UI extends javax.swing.JFrame {
     	JPanel mainTab = new JPanel ();
         mainTab.setLayout(new FlowLayout ());
         
-        mainTab.add (new JLabel ("Your ip: "));
-        ipField = new JTextField (GlobalProperties.getString ("ourIP"));
-        ipField.setColumns (20);
-        mainTab.add (ipField);
-        mainTab.add (new JLabel ("Your port: "));
-        portField = new JTextField (Integer.toString (GlobalProperties.getInt ("ourport")));
-        portField.setColumns (20);
-        mainTab.add (portField);
+        queryField = new JTextField ("");
+        queryField.setColumns (20);
+        mainTab.add(queryField);
+        
+        JButton searchButton = new JButton ("Search");
+        
+        mainTab.add(searchButton);
+        
         
     	return mainTab;
     }
@@ -106,14 +105,14 @@ public class UI extends javax.swing.JFrame {
 	}
 	private void addDcTab () {
 		SU.assertEdt ();
-		DCTab dct = new DCTab (this, ipField.getText (), Integer.parseInt (portField.getText ()));
+		DCTab dct = new DCTab (this);
 		if (tm.addTab ("DC", dct, true))
 			dct.start ();
 	}
 	
 	private void addFTPTab () {
 		SU.assertEdt ();
-		FTPTab dct = new FTPTab (this, ipField.getText (), Integer.parseInt (portField.getText ()));
+		FTPTab dct = new FTPTab (this);
 		tm.addTab ("FTP", dct, true);
 	}
     

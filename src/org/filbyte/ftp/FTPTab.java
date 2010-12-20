@@ -17,8 +17,6 @@ import org.filbyte.*;
 public class FTPTab extends JPanel implements Stopable{
 	private static final long serialVersionUID = 1L;
 	JButton searchButton;
-	public final String ip;
-	public final int port;
 	List<FtpClient> clients = Collections.synchronizedList (new ArrayList<FtpClient> ());
 	static LogHandler logger = new LogHandler ();
 
@@ -29,9 +27,7 @@ public class FTPTab extends JPanel implements Stopable{
 	}
 	
 	
-	public FTPTab (final JFrame window, String ip, int port) {
-		this.ip = ip;
-		this.port = port;
+	public FTPTab (final JFrame window) {
 		
 		setLayout(new BorderLayout ());
 		JToolBar buttonPanel = new JToolBar ();
@@ -40,8 +36,7 @@ public class FTPTab extends JPanel implements Stopable{
 		connectButton.addActionListener(new ActionListener () {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				final UserPassDialog upd = new UserPassDialog (window,
-						FTPTab.this.ip);
+				final UserPassDialog upd = new UserPassDialog (window, "");
 				upd.setVisible(true);
 				if (upd.ip != null) {
 					final FTPServerTab servertab = new FTPServerTab ();

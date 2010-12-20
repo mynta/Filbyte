@@ -9,9 +9,11 @@ public class GlobalProperties {
 	public synchronized static void setDefaults () {
 		props.setProperty ("ourIP", "127.0.0.1");
 		props.setProperty ("ourport", "5061");
+		props.setProperty ("upnp", "true");
 		
 		props.setProperty ("downloaddir", "download");
 		
+		props.setProperty ("dc.auto-port", "true");
 		props.setProperty ("dc.description", "");
 		props.setProperty ("dc.nick", "filbyte");
 		props.setProperty ("dc.pass", "");
