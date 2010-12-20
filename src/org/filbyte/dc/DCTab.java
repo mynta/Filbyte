@@ -60,6 +60,7 @@ public class DCTab extends JPanel implements Stopable{
 	}
 	public void stop () {
 		SU.assertEdt ();
+		PortHandler.releasePort (port);
 		context.manager.shutdown ();
 	}
 }

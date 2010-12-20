@@ -1,6 +1,6 @@
 package org.filbyte;
 
-import java.io.File;
+import java.io.*;
 
 public class Main {
 
@@ -9,10 +9,20 @@ public class Main {
 	public static void main (String[] args) {
 		GlobalProperties.load (new File (propertyPath));
 		ensureFoldersExist ();
+		new Thread () {
+			@Override public void run () {
+				try {
+					PortHandler.init ();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}.start ();
 		UI.start ();
 		Runtime.getRuntime ().addShutdownHook (new Thread () {
 			@Override public void run () {
 				GlobalProperties.save (new File (propertyPath));
+				PortHandler.releaseAllPorts ();
 			}
 		});
 
