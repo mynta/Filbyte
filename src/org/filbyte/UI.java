@@ -3,9 +3,11 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 import org.filbyte.dc.*;
 import org.filbyte.ftp.FTPTab;
+import org.filbyte.torrent.scraper.*;
 
 
 import java.util.*;
@@ -17,6 +19,9 @@ public class UI extends javax.swing.JFrame {
 	TabManager tm;
 	JTextField queryField;
 	List<String> tabs = new ArrayList <String> ();
+	PrettyTable pt;
+	
+	private static final String [] headers = {"Name","Url","Seeders","Leechers","Size"};
 	
     public UI() {
 		SU.assertEdt ();
@@ -41,9 +46,44 @@ public class UI extends javax.swing.JFrame {
         mainTab.add(queryField);
         
         JButton searchButton = new JButton ("Search");
+        searchButton.addActionListener (new ActionListener () {
+
+			@Override
+			public void actionPerformed (ActionEvent arg0) {
+				try {
+					List<SwarmData> l = PirateBay.doSearch (queryField.getText ());
+					PayloadTableModel<Void> dtm = (PayloadTableModel<Void>) pt.jt.getModel ();
+					dtm.clear ();
+					for (SwarmData sd : l) {
+						ArrayList<Object> list = new ArrayList<Object> ();
+						list.add (sd.name);
+						list.add (sd.url);
+						list.add (sd.seeders);
+						list.add (sd.leechers);
+						list.add (sd.size);
+						dtm.addRow (list, null);
+					}
+	
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}});
         
         mainTab.add(searchButton);
         
+        pt = new PrettyTable (new PayloadTableModel<Void> (headers) , new PrettyTable.PopupBuilder () {
+			@Override
+			public void buildPopup (JTable table, MouseEvent e,
+					List<Integer> selected) {
+				// TODO Auto-generated method stub
+				
+			}
+        });
+        
+        pt.jsp.setPreferredSize (new Dimension(800, 400));
+        mainTab.add (pt.jsp);
         
     	return mainTab;
     }
