@@ -128,9 +128,14 @@ public class DCHubTab extends JPanel implements EventjDCBotListener, Stopable{
 	}
 
 	@Override
-	public void on_Join(jDCBot src, String user) {
-		logArea.appendBoldAndTextLater (user, " joined.\n");
-		utm.addUser (src.getUser (user));
+	public void on_Join(jDCBot src, String usernick) {
+		logArea.appendBoldAndTextLater (usernick, " joined.\n");
+		final User user = src.getUser (usernick);
+		SU.invokeLater (new Runnable () {
+			public void run () {
+				utm.addUser (user);
+			}
+		});
 	}
 	@Override
 	public void on_Quit(jDCBot src, final String user) {
